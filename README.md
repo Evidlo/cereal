@@ -1,2 +1,69 @@
 # cereal
 A minimal static website generator.
+
+Cereal is a tiny static website generator which reads your page content from one file then stuffs it into a template, allowing you to quickly create multiple pages like blog posts or project documentation.
+
+I created Cereal because most of the static site generators I researched (Jekyll, Pelican, Nikola, etc.) did way more than I wanted, which was simply to separate content from layout.
+
+## Dependencies
+* jinja2
+* yaml
+* mistune (markdown support)
+
+## Example
+
+Let's give a simple demonstration.  Let's say you want a simple site to document your projects, where each project page is identically formatted, but the words, pictures, etc. are different.  Here's an example [Jinja2 template]().
+
+`layout/project.html`
+
+    <!DOCTYPE html>
+
+    <html>
+        <h1>{{ title }}</h1>
+        <h2>{{ date }}</h2>
+
+    {{ content }}
+
+    </html>
+
+So now we have a basic template.  Let's write some content for a new project.
+
+`content/my_project1.yaml`
+
+    layout: project.html
+
+    title: How to Make Cereal
+    date: 2015-12-11
+    content: |
+        ## Instructions
+        - buy milk
+        - buy cereal
+        - mix them together
+        ![img delicious](cereal.jpg)
+
+Note that the only 'special' fields here are `layout` and `content`.  `layout` tells Cereal which layout to use for generating the html, and `content` is the main body for the page (in Markdown) which gets converted into html.  `title` and `date` are just strings that get inserted into the Jinja2 template.  Now lets build the website.
+
+    python build.py
+
+The output looks like this
+
+`out/my_project1.html`
+
+    <!DOCTYPE html>
+
+    <html>
+        <h1>How to Make Cereal</h1>
+        <h2>2015-12-11</h2>
+
+        <h2>Instructions</h2>
+        <ul>
+        <li>buy milk</li>
+        <li>buy cereal</li>
+        <li>mix them together
+        <img src="cereal.jpg" alt="img delicious"></li>
+        </ul>
+
+    </html>
+
+Apart from converting the markdown to html, Cereal doesn't do anything special to the `content` section.  As far as it is concerned, its just another hunk of data, just like `title` and `date`.
+
