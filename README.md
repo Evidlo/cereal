@@ -6,6 +6,7 @@ Cereal is a tiny static website generator which reads your page content from one
 I created Cereal because most of the static site generators I researched (Jekyll, Pelican, Nikola, etc.) did way more than I wanted, which was simply to separate content from layout.
 
 ## Dependencies
+
 * jinja2
 * yaml
 * mistune (markdown support)
@@ -55,15 +56,23 @@ The output looks like this
         <h1>How to Make Cereal</h1>
         <h2>2015-12-11</h2>
 
+        <img src="cereal.jpg" alt="img delicious"></li>
         <h2>Instructions</h2>
         <ul>
         <li>buy milk</li>
         <li>buy cereal</li>
         <li>mix them together
-        <img src="cereal.jpg" alt="img delicious"></li>
         </ul>
 
     </html>
 
-Apart from converting the markdown to html, Cereal doesn't do anything special to the `content` section.  As far as it is concerned, its just another hunk of data, just like `title` and `date`.
+![Wowza!](http://i.imgur.com/5xYkoQD.png)
 
+## Directories
+
+Build your directory structure however you want.  Cereal will descend into directories in `content` and output into an equivalent directory in `out`.  For example, the content file
+    content/foo/bar/myproj.yaml
+would create the output
+    out/foo/bar/myproj.html
+    The only requirement is that the template specified in `myproj.yaml` must be located in
+    layout/foo/bar/
