@@ -71,8 +71,18 @@ The output looks like this
 ## Directories
 
 Build your directory structure however you want.  Cereal will descend into directories in `content` and output into an equivalent directory in `out`.  For example, the content file
-    content/foo/bar/myproj.yaml
+    content/foo/myproj.yaml
 would create the output
-    out/foo/bar/myproj.html
+    out/foo/myproj.html
     The only requirement is that the template specified in `myproj.yaml` must be located in
-    layout/foo/bar/
+    layout/foo/
+
+    - content/
+        - foo/
+                myproj.yaml
+    - layout/
+        - foo/
+                project.html
+    - out/
+        - foo/
+                myproj.html
