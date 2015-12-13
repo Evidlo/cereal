@@ -1,0 +1,7 @@
+layout: index.html
+title: Tasty Recipes
+links:
+  - link: projects/cereal.html
+    desc: A bowl of crunchy deliciousness.
+  - link: projects/egg_salad.html
+    desc: Great for LAN parties.
