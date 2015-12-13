@@ -74,8 +74,6 @@ Build your directory structure however you want.  Cereal will descend into direc
     content/foo/myproj.yaml
 would create the output
     out/foo/myproj.html
-    The only requirement is that the template specified in `myproj.yaml` must be located in
-    layout/foo/
 
     - content/
         - foo/
