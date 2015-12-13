@@ -70,7 +70,7 @@ for subdir, dirs, files in os.walk(content_dir):
                     break
 
                 # process 'content' as markdown before rendering, if it exists
-                if yaml_data['content']
+                if 'content' in yaml_data:
                     yaml_data['content'] = mistune.markdown(yaml_data['content'])
 
                 # create path to output_file and render it. if layout not found, print warning
