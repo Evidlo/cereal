@@ -61,9 +61,7 @@ for subdir, dirs, files in os.walk(content_dir):
                 #try to find the layout specified on content_file
                 #if not specified, print a warning and skip content_file
                 try:
-                    layout_file = "%s/%s/%s" % (layout_dir,
-                                                os.path.relpath(subdir,content_dir),
-                                                yaml_data['layout'])
+                    layout_file = "%s/%s" % (layout_dir, yaml_data['layout'])
 
                 except KeyError:
                     print('No layout specified for %s. Skipping...' % content_file)
