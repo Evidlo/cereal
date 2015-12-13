@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<h1> So many damn links! </h1>
+<ul>
+{% for link in links %}
+<li><a href="{{link.link}}"> - {{link.desc}}</li>
+{% endfor %}
+</ul>
+
+</html>
+
