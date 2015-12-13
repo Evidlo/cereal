@@ -1,1 +1,3 @@
 out/*
+demo/out/*
+demo/cereal.py
