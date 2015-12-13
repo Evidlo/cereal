@@ -70,10 +70,8 @@ for subdir, dirs, files in os.walk(content_dir):
                     break
 
                 # process 'content' as markdown before rendering, if it exists
-                try:
+                if yaml_data['content']
                     yaml_data['content'] = mistune.markdown(yaml_data['content'])
-                except KeyError:
-                    print('Content not specified for %s. Rendering anyways...' % content_file)
 
                 # create path to output_file and render it. if layout not found, print warning
                 try:
