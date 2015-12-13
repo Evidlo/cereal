@@ -8,7 +8,7 @@ I created Cereal because most of the static site generators I researched (Jekyll
 ## Dependencies
 
 * jinja2
-* yaml
+* PyYAML
 * mistune (markdown support)
 
 ## Example
