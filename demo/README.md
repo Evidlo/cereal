@@ -29,3 +29,5 @@ The example below shows how to use jinja2 macros to create captioned images in y
         - enjoy
 
 It's necessary to import the `project_img` macro here because the content file is rendered in a separate template before substitution in your layout file.  You could also define the macro directly in this content file, but this way allows you to use the `project_img` macro elsewhere.
+
+![Using Jinja Macros](http://i.imgur.com/r4zl2no.png)
