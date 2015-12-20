@@ -1,6 +1,8 @@
 # cereal
 A minimal static website generator.
 
+![Cereal](http://imgur.com/j9BlQVV.png)
+
 Cereal is a tiny static website generator which reads your page content from one file then stuffs it into a template, allowing you to quickly create multiple pages like blog posts or project documentation.
 
 I created Cereal because most of the static site generators I researched (Jekyll, Pelican, Nikola, etc.) did way more than I wanted, which was simply to separate content from layout.
