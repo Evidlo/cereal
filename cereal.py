@@ -7,7 +7,7 @@
 import yaml
 import mistune
 import os, shutil, errno
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Template
 
 # useful exceptions
 from jinja2.exceptions import TemplateNotFound
@@ -67,9 +67,11 @@ for subdir, dirs, files in os.walk(content_dir):
                     print('No layout specified for %s. Skipping...' % content_file)
                     break
 
-                # process 'content' as markdown before rendering, if it exists
+                # process content as jinja2 and markdown before rendering
                 if 'content' in yaml_data:
-                    yaml_data['content'] = mistune.markdown(yaml_data['content'])
+                    yaml_data['content'] = env.from_string(yaml_data['content']).render()
+                    yaml_data['content'] = mistune.markdown(yaml_data['content'],escape=False)
+
 
                 # create path to output_file and render it. if layout not found, print warning
                 try:
