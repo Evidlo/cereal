@@ -5,6 +5,8 @@ Cereal is a tiny static website generator which reads your page content from one
 
 I created Cereal because most of the static site generators I researched (Jekyll, Pelican, Nikola, etc.) did way more than I wanted, which was simply to separate content from layout.
 
+Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http://jinja.pocoo.org/docs/dev/), so a basic knowledge of those languages is a prerequisite.
+
 ## Dependencies
 
 * jinja2
