@@ -40,11 +40,11 @@ So now we have a basic template.  Let's write some content for a new project.
     title: How to Make Cereal
     date: 2015-12-11
     content: |
+        ![img delicious](cereal.jpg)
         ## Instructions
         - buy milk
         - buy cereal
         - mix them together
-        ![img delicious](cereal.jpg)
 
 Note that the only 'special' fields here are `layout` and `content`.  `layout` tells Cereal which layout to use for generating the html, and `content` is the main body for the page (in Markdown) which gets converted into html.  `title` and `date` are just strings that get inserted into the Jinja2 template.  Now lets build the website.
 
