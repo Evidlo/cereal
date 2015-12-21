@@ -6,26 +6,68 @@ To build the demo, run `cereal.py` from this directory.
 
     python ../cereal.py
 
-
-## Jinja2 inside content files
+## Jinja2 macros inside content files
 
 Jinja2 in your content files allows you to do more complex things, like functionally generated html.
 
 The example below shows how to use jinja2 macros to create captioned images in your content files.
 
-`content/projects/project.html`
+`content/projects/egg_salad.yaml`
  
     layout: project.html
 
     title: How to make Egg Salad
     date: 2015-12-12
-    content: |
-        {% from 'layout/project.html' import project_img %}
-        {{ project_img('egg-salad.jpg','This looks delicious!') }}
-        ## Instructions
-        - buy eggs
-        - buy salad
-        - blend
-        - enjoy
+    content: !join
+        - !j2 |
+            {{ project_img('egg-salad.jpg','This looks delicious!') }}
+        - !md |
+            ## Instructions
+            - buy eggs
+            - buy salad
+            - blend
+            - enjoy
+        - !py |
+            print 1+1
+            print 2+3
+            for x in range(99):print x
 
 It's necessary to import the `project_img` macro here because the content file is rendered in a separate template before substitution in your layout file.  You could also define the macro directly in this content file, but this way allows you to use the `project_img` macro elsewhere.
+
+## Custom processors and other shenanigans
+You can write your own content processors for more customizability.  Below is a demo of the Python context processor.
+
+`content/projects/numbers.yaml`
+
+    layout: project.html
+
+    title: Number fun
+    content: !join
+        - !py |
+            print "Hello World"
+            print "<ul>"
+            for x in range(99):
+            print "<li>%s</li>" % x
+            print "</ul>"
+
+Result: `out/projects/numbers.html`
+
+    <!DOCTYPE html>
+    <html>
+    <h1> Evidlo's Recipes </h1>
+
+    <h1>Number fun</h1>
+    <h2></h2>
+
+    Hello World
+    <ul>
+    <li>0</li>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    <li>6</li>
+    ...
+
+![Python Processor](http://i.imgur.com/Dlw0L2y.png)

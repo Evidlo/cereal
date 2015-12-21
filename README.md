@@ -37,16 +37,20 @@ So now we have a basic template.  Let's write some content for a new project.
 
     title: How to Make Cereal
     date: 2015-12-11
-    content: |
+    content: !md |
+        ![img delicious](cereal.jpg)
         ## Instructions
         - buy milk
         - buy cereal
         - mix them together
-        ![img delicious](cereal.jpg)
 
-Note that the only 'special' fields here are `layout` and `content`.  `layout` tells Cereal which layout to use for generating the html, and `content` is the main body for the page (in Markdown) which gets converted into html.  `title` and `date` are just strings that get inserted into the Jinja2 template.  Now lets build the website.
+The `layout`, `title`, `date` and `content` entries are called `nodes`, per the YAML spec.
+`layout` tells cereal which layout file (aka template) to use.  It will look in `layout/` for this file.
+The other three nodes correspond to the variables in our layout file and will get substituted in when we compile the website.  Note the `|` and `!md` on the `content` node.  This signifies that everything inside `content` is a string and should be parsed as Markdown.
 
-    python build.py
+Let's build the website.
+
+    python cereal.py
 
 The output looks like this
 
@@ -70,6 +74,9 @@ The output looks like this
 
 ![Wowza!](http://i.imgur.com/5xYkoQD.png)
 
+## More
+See `README.md` in the demo directory for a working demo and examples of more advanced features.
+
 ## Directories
 
 Build your directory structure however you want.  Cereal will descend into directories in `content` and output into an equivalent directory in `out`.  For example, the content file
@@ -81,8 +88,9 @@ would create the output
         - foo/
             myproj.yaml
     - layout/
-        - foo/
-            project.html
+        project.html
     - out/
         - foo/
             myproj.html
+
+Note that all layout files should go directly in `layout/`.
