@@ -74,7 +74,7 @@ The output looks like this
 
     </html>
 
-![Wowza!](http://i.imgur.com/5xYkoQD.png)
+![Wowza!](http://imgur.com/kRBCzrj.png)
 
 ## More
 See `README.md` in the demo directory for a working demo and examples of more advanced features.
