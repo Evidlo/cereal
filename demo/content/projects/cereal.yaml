@@ -2,7 +2,7 @@ layout: project.html
 
 title: How to Make Cereal
 date: 2015-12-11
-content: |
+content: !md |
     ![img delicious](cereal.jpg)
     ## Instructions
     - buy milk
