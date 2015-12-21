@@ -70,4 +70,4 @@ Result: `out/projects/numbers.html`
     <li>6</li>
     ...
 
-<img style='border:1px solid #000000' src="http://i.imgur.com/Dlw0L2y.png"/>
+![Numbers](http://i.imgur.com/WxMi8TP.png)
