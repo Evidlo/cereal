@@ -15,7 +15,7 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
 * PyYAML
 * mistune (markdown support)
 
-## Example
+## Simple Example
 
 Let's give a simple demonstration.  Let's say you want a simple site to document your projects, where each project page is identically formatted, but the words, pictures, etc. are different.  Here's an example [Jinja2 template]().
 
@@ -27,7 +27,7 @@ Let's give a simple demonstration.  Let's say you want a simple site to document
         <h1>{{ title }}</h1>
         <h2>{{ date }}</h2>
 
-    {{ content }}
+        {{ content }}
 
     </html>
 
@@ -36,7 +36,6 @@ So now we have a basic template.  Let's write some content for a new project.
 `content/my_project1.yaml`
 
     layout: project.html
-
     title: How to Make Cereal
     date: 2015-12-11
     content: !md |
@@ -67,17 +66,81 @@ The output looks like this
         <img src="cereal.jpg" alt="img delicious"></li>
         <h2>Instructions</h2>
         <ul>
-        <li>buy milk</li>
-        <li>buy cereal</li>
-        <li>mix them together
+            <li>buy milk</li>
+            <li>buy cereal</li>
+            <li>mix them together
         </ul>
 
     </html>
 
 ![Wowza!](http://imgur.com/kRBCzrj.png)
 
-## More
-See `README.md` in the demo directory for a working demo and examples of more advanced features.
+## Template Inheritance
+
+Lets add a header and footer to all of our pages.  Template inheritance is a feature of Jinja2, not Cereal, but we'll cover it anyway.  First create a parent template.
+
+`layout/base.html`
+
+    <!DOCTYPE html>
+    <html>
+    <h1> Evidlo's Recipes </h1>
+    
+    {% block body %}
+    {% endblock body %}
+    
+    <h4> Created by MasterChef Evidlo </h4>
+    </html>
+    
+Now change our project template to make use of this base template.
+
+`layout/project.html`
+
+    {% extends 'layout/base.html' %}
+    
+    {% block body %}
+    <h1>{{ title }}</h1>
+    <h2>{{ date }}</h2>
+
+    {{ content }}
+    {% endblock %}
+
+![Header](https://i.imgur.com/xdjXV3S.png)
+
+## Iterable Data
+Since YAML data maps directly to Python datatypes, we can do interesting things like looping over content items from our templates.  Lets make an index page that's easy to update whenever we add a new recipe.
+
+`layout/index.html`
+
+    {% extends "layout/base.html" %}
+    
+    {% block body %}
+    <h2> {{title}} </h2>
+    <ul>
+    {% for link in links %}
+        <li>
+            <a href="{{link.link}}"> {{link.name}}</a> - {{link.desc}}
+        </li>
+    {% endfor %}
+    </ul>
+    {% endblock body %}
+    
+`content/index.yaml`
+
+    layout: index.html
+    title: Tasty Recipes
+    links:
+      - name: Cereal
+        link: projects/cereal.html
+        desc: A bowl of crunchy deliciousness.
+      - name: Egg Salad
+        link: projects/egg_salad.html
+        desc: Great for LAN parties.
+
+    
+![Index](http://i.imgur.com/naadkA4.png)
+
+
+See [README.md](demo/README.md) in the demo directory for a working demo and examples of more advanced features.
 
 ## Directories
 
