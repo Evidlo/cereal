@@ -3,9 +3,9 @@ To build the demo, run `cereal.py` from this directory.
 
     python ../cereal.py
     
-Note:  You need `PyYaml` and `mistune`
+Note:  You need `PyYaml`, `jinja2`, and `mistune`
 
-    pip install PyYaml mistune
+    pip install PyYaml jinja2 mistune
     
 ## Extended Features
 
