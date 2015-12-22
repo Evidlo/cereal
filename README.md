@@ -94,5 +94,3 @@ would create the output
     - out/
         - foo/
             myproj.html
-
-Note that all layout files should go directly in `layout/`.
