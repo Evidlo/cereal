@@ -157,3 +157,8 @@ would create the output
     - out/
         - foo/
             myproj.html
+
+
+## Why cereal?
+
+Cereal is delicious, that's why.
