@@ -2,7 +2,10 @@
 # Evan Widloski - 2015-12-12
 # Cereal - Minimal static website generator
 
+#issue - stacking content tags, sol: use one multi_content constructor with tag '!', move constructors into own defs and call them from the singular multi constructor
+
 import yaml
+from yaml import nodes
 import mistune
 import os, sys, shutil, errno
 from jinja2 import Environment, FileSystemLoader, Template
@@ -18,40 +21,51 @@ symlink = False
 env = Environment(loader=FileSystemLoader('.'))
 
 #------------- Content Processors --------------
+# Use processors to specify how content nodes are parsed
 
-def join_constructor(loader,node):
-    value = loader.construct_sequence(node)
+def join_processor(value):
     return '\n'.join(value)
 
-def md_constructor(loader,node):
-    value = loader.construct_scalar(node)
+def md_processor(value):
     return mistune.markdown(value,escape=False)
 
-def jinja_constructor(loader,node):
-    value = loader.construct_scalar(node)
+def jinja_processor(value):
     value = "{% extends 'layout/macros.html' %} {% block _macro_ %}" \
         + value \
         + "{% endblock %}"
     rend = env.from_string(value).render()
     return rend
 
-def py_constructor(loader,node):
+def py_processor(value):
     from cStringIO import StringIO
-    value = loader.construct_scalar(node)
     old_stdout = sys.stdout
     redirected_output = sys.stdout = StringIO()
     exec(value)
     sys.stdout = old_stdout
     return redirected_output.getvalue()
 
-# add content tags
-yaml.add_constructor(u'!join',join_constructor)
-yaml.add_constructor(u'!md',md_constructor)
-yaml.add_constructor(u'!j2',jinja_constructor)
-yaml.add_constructor(u'!py',py_constructor)
+# Map tag to each processor
+processors = {'join':join_processor,
+              'md':md_processor,
+              'j2':jinja_processor,
+              'py':py_processor
+              }
 
 #-----------------------------------------
 
+# Allow comma separated yaml tags
+def constructor(loader,suffix,node):
+    if isinstance(node,nodes.ScalarNode):
+        value = loader.construct_scalar(node)
+    if isinstance(node,nodes.SequenceNode):
+        value = loader.construct_sequence(node)
+    if isinstance(node,nodes.MappingNode):
+        value = loader.construct_mapping(node)
+    for tag in suffix.split(','):
+        value = processors[tag](value)
+    return value
+
+yaml.add_multi_constructor(u'!',constructor)
 
 # make all dirs up to path
 def make_path(path):
