@@ -2,8 +2,6 @@
 # Evan Widloski - 2015-12-12
 # Cereal - Minimal static website generator
 
-#issue - stacking content tags, sol: use one multi_content constructor with tag '!', move constructors into own defs and call them from the singular multi constructor
-
 import yaml
 from yaml import nodes
 import mistune
@@ -12,13 +10,22 @@ from jinja2 import Environment, FileSystemLoader, Template
 
 # useful exceptions
 from jinja2.exceptions import TemplateNotFound
+import traceback
 
 content_dir = 'content'
 layout_dir = 'layout'
 output_dir = 'out'
 symlink = False
 
-env = Environment(loader=FileSystemLoader('.'))
+# Jinja file loader - delete extra newlines
+env = Environment(loader=FileSystemLoader('.'),trim_blocks=True,lstrip_blocks=True)
+
+# Markdown renderer - disable mistune <p> insertion
+class disable_paragraph_renderer(mistune.Renderer):
+    def paragraph(self, text):
+        return '<br>%s' % text.strip(' ')
+renderer = disable_paragraph_renderer()
+markdown = mistune.Markdown(renderer,escape=False)
 
 #------------- Content Processors --------------
 # Use processors to specify how content nodes are parsed
@@ -26,15 +33,15 @@ env = Environment(loader=FileSystemLoader('.'))
 def join_processor(value):
     return '\n'.join(value)
 
+
 def md_processor(value):
-    return mistune.markdown(value,escape=False)
+    return markdown(value)
 
 def jinja_processor(value):
     value = "{% extends 'layout/macros.html' %} {% block _macro_ %}" \
         + value \
         + "{% endblock %}"
-    rend = env.from_string(value).render()
-    return rend
+    return env.from_string(value).render()
 
 def py_processor(value):
     from cStringIO import StringIO
@@ -104,7 +111,11 @@ for subdir, dirs, files in os.walk(content_dir):
 
             # open content file, find layout and render it
             with open(content_file) as f:
-                yaml_data = yaml.load(f)
+                try:
+                    yaml_data = yaml.load(f)
+                except Exception as e:
+                    print traceback.format_exc()
+                    print 'Error while processing content file: %s' % content_file
 
                 # try to find the layout specified on content_file
                 # if not specified, print a warning and skip content_file
