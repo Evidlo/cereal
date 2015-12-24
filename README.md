@@ -32,8 +32,7 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
 * PyYAML
 * mistune (markdown support)
 
-
-    pip install PyYaml jinja2 mistune
+`pip install PyYaml jinja2 mistune`
 
 # Simple Example
 
