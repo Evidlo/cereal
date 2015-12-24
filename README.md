@@ -9,6 +9,23 @@ I created Cereal because most of the static site generators I researched (Jekyll
 
 Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http://jinja.pocoo.org/docs/dev/), so a basic knowledge of those languages is a prerequisite.
 
+#### Table of Contents
+
+    * [cereal](#cereal)
+        * [Dependencies](#dependencies)
+    * [Simple Example](#simple-example)
+        * [Template Inheritance](#template-inheritance)
+        * [Iterable Data](#iterable-data)
+    * [Extended Features](#extended-features)
+        * [Custom processors and other shenanigans](#custom-processors-and-other-shenanigans)
+        * [Multiple content processors and the !join processors](#multiple-content-processors-and-the-join-processors)
+        * [Jinja2 macros inside content files](#jinja2-macros-inside-content-files)
+        * [Directories](#directories)
+    * [Demo](#demo)
+        * [Why cereal?](#why-cereal)
+                                                      
+
+
 ### Dependencies
 
 * jinja2
