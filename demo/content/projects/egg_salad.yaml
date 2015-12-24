@@ -4,7 +4,7 @@ title: How to make Egg Salad
 date: 2015-12-12
 content: !join
     - !j2 |
-        {{ project_img('egg-salad.jpg','This looks delicious!') }}
+        {{ project_img('egg_salad.jpg','This looks delicious!') }}
     - !md |
         ## Instructions
         - buy eggs
