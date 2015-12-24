@@ -11,22 +11,22 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
 
 #### Table of Contents
 
-    * [cereal](#cereal)
-        * [Dependencies](#dependencies)
-    * [Simple Example](#simple-example)
-        * [Template Inheritance](#template-inheritance)
-        * [Iterable Data](#iterable-data)
-    * [Extended Features](#extended-features)
-        * [Custom processors and other shenanigans](#custom-processors-and-other-shenanigans)
-        * [Multiple content processors and the !join processors](#multiple-content-processors-and-the-join-processors)
-        * [Jinja2 macros inside content files](#jinja2-macros-inside-content-files)
-        * [Directories](#directories)
-    * [Demo](#demo)
-        * [Why cereal?](#why-cereal)
+* [cereal](#cereal)
+    * [Dependencies](#dependencies)
+* [Simple Example](#simple-example)
+    * [Template Inheritance](#template-inheritance)
+    * [Iterable Data](#iterable-data)
+* [Extended Features](#extended-features)
+    * [Custom processors and other shenanigans](#custom-processors-and-other-shenanigans)
+    * [Multiple content processors and the !join processors](#multiple-content-processors-and-the-join-processors)
+    * [Jinja2 macros inside content files](#jinja2-macros-inside-content-files)
+    * [Directories](#directories)
+* [Demo](#demo)
+    * [Why cereal?](#why-cereal)
                                                       
 
 
-### Dependencies
+#### Dependencies
 
 * jinja2
 * PyYAML
@@ -94,7 +94,7 @@ The output looks like this
 
 ![Wowza!](http://imgur.com/kRBCzrj.png)
 
-### Template Inheritance
+#### Template Inheritance
 
 Lets add a header and footer to all of our pages.  Template inheritance is a feature of Jinja2, not Cereal, but we'll cover it anyway.  First create a parent template.
 
@@ -125,7 +125,7 @@ Now change our project template to make use of this base template.
 
 ![Header](https://i.imgur.com/xdjXV3S.png)
 
-### Iterable Data
+#### Iterable Data
 Since YAML data maps directly to Python datatypes, we can do interesting things like looping over content items from our templates.  Lets make an index page that's easy to update whenever we add a new recipe.
 
 `layout/index.html`
@@ -162,7 +162,7 @@ Since YAML data maps directly to Python datatypes, we can do interesting things 
 # Extended Features
 
 
-### Custom processors and other shenanigans
+#### Custom processors and other shenanigans
 You can write your own content processors for more customizability.  Below is a demo of the Python context processor.
 
 `content/projects/numbers.yaml`
@@ -200,7 +200,7 @@ You can write your own content processors for more customizability.  Below is a 
 
 ![Numbers](http://i.imgur.com/WxMi8TP.png)
 
-### Multiple content processors and the `!join` processors
+#### Multiple content processors and the `!join` processors
 
 You can run your nodes through multiple content processors by separating them with a comma.  This allows you to do something like use markdown and Jinja2 in the same node.
 
@@ -240,7 +240,7 @@ content: !join
         
 Note the lack of '|' after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
 
-### Jinja2 macros inside content files
+#### Jinja2 macros inside content files
 
 Jinja2 in your content files allows you to do more complex things, like functionally generated html.
 
@@ -283,7 +283,7 @@ Now you can use this on any node with a `!j2 tag`
             
 
 
-### Directories
+#### Directories
 
 Build your directory structure however you want.  Cereal will descend into directories in `content` and output into an equivalent directory in `out`.  For example, the content file
     content/foo/myproj.yaml
