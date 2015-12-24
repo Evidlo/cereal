@@ -49,7 +49,7 @@ You can write your own content processors for more customizability.  Below is a 
 
 ![Numbers](http://i.imgur.com/WxMi8TP.png)
 
-## Multiple content processors and the `!join` processors
+## Multiple content processors and the `!join` processor
 
 You can run your nodes through multiple content processors by separating them with a comma.  This allows you to do something like use markdown and Jinja2 in the same node.
 
