@@ -270,8 +270,9 @@ Now you can use this on any node with a `!j2 tag`
 
     title: How to make Egg Salad
     date: 2015-12-12
-    content: !j2 |
-        {{ project_img('egg-salad.jpg','This looks delicious!') }}
+    content: !join
+        - !j2 |
+            {{ project_img('egg-salad.jpg','This looks delicious!') }}
         - !md |
             ## Instructions
             - buy eggs
