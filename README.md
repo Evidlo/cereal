@@ -32,6 +32,7 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
 * PyYAML
 * mistune (markdown support)
 
+
     pip install PyYaml jinja2 mistune
 
 # Simple Example
@@ -200,7 +201,7 @@ You can write your own content processors for more customizability.  Below is a 
 
 ![Numbers](http://i.imgur.com/WxMi8TP.png)
 
-#### Multiple content processors and the `!join` processors
+#### Multiple content processors and the `!join` processor
 
 You can run your nodes through multiple content processors by separating them with a comma.  This allows you to do something like use markdown and Jinja2 in the same node.
 
@@ -238,7 +239,7 @@ Alternatively, you can process different parts of a node with different processo
             print 2+3
             for x in range(99):print x
         
-Note the lack of '|' after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
+Note the lack of `|` after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
 
 #### Jinja2 macros inside content files
 
@@ -249,6 +250,7 @@ The example below shows how to use jinja2 macros to create captioned images in y
 First define a Jinja2 macro.
 
 `layout/macros.html`
+
     {# Define custom macros here #}
     {# These are available to all content nodes with the !j2 tag #}
 
@@ -307,6 +309,6 @@ To build the demo, run `cereal.py` from the `demo` directory.
     
     
 
-## Why cereal?
+# Why cereal?
 
 Cereal is delicious, that's why.
