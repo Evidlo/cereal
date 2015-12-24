@@ -11,34 +11,6 @@ Note:  You need `PyYaml`, `jinja2`, and `mistune`
 
 This is an extension of the README provided in the base directory. 
 
-## Jinja2 macros inside content files
-
-Jinja2 in your content files allows you to do more complex things, like functionally generated html.
-
-The example below shows how to use jinja2 macros to create captioned images in your content files.
-
-`content/projects/egg_salad.yaml`
- 
-    layout: project.html
-
-    title: How to make Egg Salad
-    date: 2015-12-12
-    content: !join
-        - !j2 |
-            {{ project_img('egg-salad.jpg','This looks delicious!') }}
-        - !md |
-            ## Instructions
-            - buy eggs
-            - buy salad
-            - blend
-            - enjoy
-        - !py |
-            print 1+1
-            print 2+3
-            for x in range(99):print x
-
-It's necessary to import the `project_img` macro here because the content file is rendered in a separate template before substitution in your layout file.  You could also define the macro directly in this content file, but this way allows you to use the `project_img` macro elsewhere.
-
 ## Custom processors and other shenanigans
 You can write your own content processors for more customizability.  Below is a demo of the Python context processor.
 
@@ -47,15 +19,15 @@ You can write your own content processors for more customizability.  Below is a 
     layout: project.html
 
     title: Number fun
-    content: !join
-        - !py |
-            print "Hello World"
-            print "<ul>"
-            for x in range(99):
+    content: !py |
+        print "Hello World"
+        print "<ul>"
+        for x in range(99):
             print "<li>%s</li>" % x
-            print "</ul>"
+        print "</ul>"
+        layout: project.html
 
-Result: `out/projects/numbers.html`
+`out/projects/numbers.html`
 
     <!DOCTYPE html>
     <html>
@@ -76,3 +48,87 @@ Result: `out/projects/numbers.html`
     ...
 
 ![Numbers](http://i.imgur.com/WxMi8TP.png)
+
+## Multiple content processors and the `!join` processors
+
+You can run your nodes through multiple content processors by separating them with a comma.  This allows you to do something like use markdown and Jinja2 in the same node.
+
+`content/projects/egg_salad.yaml`
+
+    layout: project.html
+
+    title: How to make Egg Salad
+    date: 2015-12-12
+    content: !md,j2 |
+        {{ project_img('egg-salad.jpg','This looks delicious!') }}
+        ## Instructions
+        - buy eggs
+        - buy salad
+        - blend
+        - enjoy
+        
+Alternatively, you can process different parts of a node with different processors using the `!join` tag.  This will process each item in a list with whatever processor you specify, and then join the result, similar to Python's string join function.
+
+layout: project.html
+
+title: How to make Egg Salad
+date: 2015-12-12
+content: !join
+    - !j2 |
+        {{ project_img('egg-salad.jpg','This looks delicious!') }}
+    - !md |
+        ## Instructions
+        - buy eggs
+        - buy salad
+        - blend
+        - enjoy
+    - !py |
+        print 1+1
+        print 2+3
+        for x in range(99):print x
+        
+Note the lack of '|' after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
+
+## Jinja2 macros inside content files
+
+Jinja2 in your content files allows you to do more complex things, like functionally generated html.
+
+The example below shows how to use jinja2 macros to create captioned images in your content files.
+
+First define a Jinja2 macro.
+
+`layout/macros.html`
+    {# Define custom macros here #}
+    {# These are available to all content nodes with the !j2 tag #}
+
+    {% macro project_img(src,desc='') -%}
+    <img style="display:block;" src="{{src}}">
+    <span>{{desc}}</span>
+    {%- endmacro %}
+
+    {% block _macro_ %}
+    {% endblock %}
+    
+Now you can use this on any node with a `!j2 tag`
+
+`content/projects/egg_salad.yaml`
+ 
+    layout: project.html
+
+    title: How to make Egg Salad
+    date: 2015-12-12
+    content: !j2 |
+        {{ project_img('egg-salad.jpg','This looks delicious!') }}
+        - !md |
+            ## Instructions
+            - buy eggs
+            - buy salad
+            - blend
+            - enjoy
+        - !py |
+            print 1+1
+            print 2+3
+            for x in range(99):print x
+            
+
+
