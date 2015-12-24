@@ -69,23 +69,23 @@ You can run your nodes through multiple content processors by separating them wi
         
 Alternatively, you can process different parts of a node with different processors using the `!join` tag.  This will process each item in a list with whatever processor you specify, and then join the result, similar to Python's string join function.
 
-layout: project.html
-
-title: How to make Egg Salad
-date: 2015-12-12
-content: !join
-    - !j2 |
-        {{ project_img('egg-salad.jpg','This looks delicious!') }}
-    - !md |
-        ## Instructions
-        - buy eggs
-        - buy salad
-        - blend
-        - enjoy
-    - !py |
-        print 1+1
-        print 2+3
-        for x in range(99):print x
+    layout: project.html
+    
+    title: How to make Egg Salad
+    date: 2015-12-12
+    content: !join
+        - !j2 |
+            {{ project_img('egg-salad.jpg','This looks delicious!') }}
+        - !md |
+            ## Instructions
+            - buy eggs
+            - buy salad
+            - blend
+            - enjoy
+        - !py |
+            print 1+1
+            print 2+3
+            for x in range(99):print x
         
 Note the lack of '|' after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
 
