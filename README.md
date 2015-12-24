@@ -22,7 +22,7 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
     * [Jinja2 macros inside content files](#jinja2-macros-inside-content-files)
     * [Directories](#directories)
 * [Demo](#demo)
-    * [Why cereal?](#why-cereal)
+* [Why cereal?](#why-cereal)
                                                       
 
 
