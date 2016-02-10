@@ -4,6 +4,7 @@
 
 # rendering utils
 import yaml
+import time
 from yaml import nodes
 import mistune
 from jinja2 import Environment, FileSystemLoader, Template
@@ -173,6 +174,7 @@ if args.runserver:
 
     from watchdog.observers import Observer
     from watchdog.events import PatternMatchingEventHandler
+    from datetime import datetime
 
     class handler(PatternMatchingEventHandler):
         patterns = ["./content/*","./layout/*"]
@@ -181,11 +183,13 @@ if args.runserver:
 
         def on_any_event(self,event):
             if event.event_type in ("modified","deleted","moved"):
-                # were in output_dir, we need to cd back before building
-                print "Detected change in {0}. Rebuilding...".format(event.src_path)
+                # we're in output_dir, we need to cd back before building
+                print "Detected change in {0}. Rebuilding...".format(event.src_path),
+                start_time = datetime.now()
                 os.chdir('..')
                 build(symlink)
                 os.chdir(output_dir)
+                print " Done. {0}s".format((datetime.now()-start_time).total_seconds())
 
 
     # watch content directory for changes
