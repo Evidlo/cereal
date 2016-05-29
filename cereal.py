@@ -9,7 +9,7 @@ from yaml import nodes
 import mistune
 from jinja2 import Environment, FileSystemLoader, Template
 # file handling and system
-import os, sys, shutil, errno, getopt
+import os, sys, shutil, errno, getopt,re
 # useful exceptions
 from jinja2.exceptions import TemplateNotFound
 import traceback
@@ -30,21 +30,30 @@ markdown = mistune.Markdown(renderer,escape=False)
 
 #------------- Content Processors --------------
 # Use processors to specify how content nodes are parsed
+# `value` is node content, and `args` is list of arguments
+# passed to node tag, eg. `code(python)`
 
-def join_processor(value):
+def join_processor(value,args):
     return '\n'.join(value)
 
 
-def md_processor(value):
+def md_processor(value,args):
     return markdown(value)
 
-def jinja_processor(value):
+def jinja_processor(value,args):
     value = "{% extends 'layout/macros.html' %} {% block _macro_ %}" \
         + value \
         + "{% endblock %}"
     return env.from_string(value).render()
 
-def py_processor(value):
+# pass in language using code(lang)
+def code_processor(value,args):
+    from pygments import highlight
+    from pygments.lexers import get_lexer_by_name
+    from pygments.formatters import HtmlFormatter
+    return highlight(value,get_lexer_by_name(args[0],stripall=True),HtmlFormatter())
+
+def py_processor(value,args):
     from cStringIO import StringIO
     old_stdout = sys.stdout
     redirected_output = sys.stdout = StringIO()
@@ -56,6 +65,7 @@ def py_processor(value):
 processors = {'join':join_processor,
               'md':md_processor,
               'j2':jinja_processor,
+              'code':code_processor,
               'py':py_processor
               }
 
@@ -70,7 +80,16 @@ def constructor(loader,suffix,node):
     if isinstance(node,nodes.MappingNode):
         value = loader.construct_mapping(node)
     for tag in suffix.split(','):
-        value = processors[tag](value)
+        # Accept processor arguments
+        search = re.search('(.*)\((.*)\)',tag)
+        if search:
+            processor = search.groups()[0]
+            args = search.groups()[1].split(',')
+        else:
+            processor = tag
+            args = None
+
+        value = processors[processor](value,args)
     return value
 
 yaml.add_multi_constructor(u'!',constructor)
@@ -127,7 +146,7 @@ def build(symlink=False):
                         yaml_data = yaml.load(f)
                     except Exception as e:
                         print traceback.format_exc()
-                        print 'Error while processing content file: %s' % content_file
+                        print 'Error while loading content file: %s' % content_file
 
                     # try to find the layout specified on content_file
                     # if not specified, print a warning and skip content_file
@@ -148,8 +167,12 @@ def build(symlink=False):
                             content_file))
                         break
 
-                    with open(output_file,'w+') as out:
-                        out.write(template.render(**yaml_data))
+                    try:
+                        with open(output_file,'w+') as out:
+                            out.write(template.render(**yaml_data))
+                    except Exception as e:
+                        print traceback.format_exc()
+                        print 'Error while rendering content file: %s' % content_file
 
             # if this is not yaml, just copy the file
             else:
@@ -182,7 +205,7 @@ if args.runserver:
         ignore_directories = True
 
         def on_any_event(self,event):
-            if event.event_type in ("modified","deleted","moved"):
+            if event.event_type in ("modified","deleted","moved","created"):
                 # we're in output_dir, we need to cd back before building
                 print "Detected change in {0}. Rebuilding...".format(event.src_path),
                 start_time = datetime.now()
