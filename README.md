@@ -64,7 +64,7 @@ So now we have a basic template.  Let's write some content for a new project.
         - buy cereal
         - mix them together
 
-The `layout`, `title`, `date` and `content` entries are called `nodes`, per the YAML spec.
+The `layout`, `title`, `date` and `content` entries are called `nodes`, per YAML lingo.
 `layout` tells cereal which layout file (aka template) to use.  It will look in `layout/` for this file.
 The other three nodes correspond to the variables in our layout file and will get substituted in when we compile the website.  Note the `|` and `!md` on the `content` node.  This signifies that everything inside `content` is a string and should be parsed as Markdown.
 
@@ -238,7 +238,7 @@ Alternatively, you can process different parts of a node with different processo
             print 2+3
             for x in range(99):print x
         
-Note the lack of `|` after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (scalar node).
+Note the lack of `|` after `!join`.  This is because this node contains a YAML list (sequence node) instead of a block of text (what YAML calls a scalar node).
 
 #### Jinja2 macros inside content files
 
