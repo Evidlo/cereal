@@ -36,7 +36,7 @@ Cereal makes use of [YAML](https://en.wikipedia.org/wiki/Yaml) and [Jinja2](http
 
 # Simple Example
 
-Let's give a simple demonstration.  Let's say you want a simple site to document your projects, where each project page is identically formatted, but the words, pictures, etc. are different.  Here's an example [Jinja2 template]().
+Let's give a simple demonstration.  Let's say you want a simple site to document your projects, where each project page is identically formatted, but the words, pictures, etc. are different.  Here's an example Jinja2 template:
 
 `layout/project.html`
 
