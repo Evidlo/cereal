@@ -19,25 +19,26 @@ layout_dir = 'layout'
 output_dir = 'out'
 
 # Jinja file loader - delete extra newlines
-env = Environment(loader=FileSystemLoader('.'),trim_blocks=True,lstrip_blocks=True)
+env = Environment(loader=FileSystemLoader('.'), trim_blocks=True, lstrip_blocks=True)
 
 # Markdown renderer - disable mistune <p> insertion
 class disable_paragraph_renderer(mistune.Renderer):
     def paragraph(self, text):
         return '<br>%s' % text.strip(' ')
 renderer = disable_paragraph_renderer()
-markdown = mistune.Markdown(renderer,escape=False)
+markdown = mistune.Markdown(renderer, escape=False)
 
 #------------- Content Processors --------------
 # Use processors to specify how content nodes are parsed
 # `value` is node content, and `args` is list of arguments
 # passed to node tag, eg. `code(python)`
 
-def join_processor(value,args):
+def join_processor(value, args):
     return '\n'.join(value)
 
 
-def md_processor(value,args):
+def md_processor(value, args):
+    print(value)
     return markdown(value)
 
 def jinja_processor(value,args):
@@ -47,13 +48,13 @@ def jinja_processor(value,args):
     return env.from_string(value).render()
 
 # pass in language using code(lang)
-def code_processor(value,args):
+def code_processor(value, args):
     from pygments import highlight
     from pygments.lexers import get_lexer_by_name
     from pygments.formatters import HtmlFormatter
-    return highlight(value,get_lexer_by_name(args[0],stripall=True),HtmlFormatter())
+    return highlight(value, get_lexer_by_name(args[0], stripall=True), HtmlFormatter())
 
-def py_processor(value,args):
+def py_processor(value, args):
     from cStringIO import StringIO
     old_stdout = sys.stdout
     redirected_output = sys.stdout = StringIO()
@@ -72,7 +73,7 @@ processors = {'join':join_processor,
 #-----------------------------------------
 
 # Allow comma separated yaml tags
-def constructor(loader,suffix,node):
+def constructor(loader, suffix, node):
     if isinstance(node,nodes.ScalarNode):
         value = loader.construct_scalar(node)
     if isinstance(node,nodes.SequenceNode):
@@ -110,7 +111,7 @@ def copy_resource(source,dest,symlink=False):
             os.symlink(source, dest)
         else:
             shutil.copy2(source,dest)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             os.remove(dest)
             copy_resource(source, dest)
@@ -118,10 +119,10 @@ def copy_resource(source,dest,symlink=False):
 # build site
 def build(symlink=False):
     if not os.path.exists(content_dir):
-        print 'Could not find content directory. Quitting...'
+        print('Could not find content directory. Quitting...')
         sys.exit(2)
     if not os.path.exists(layout_dir):
-        print 'Could not find layout directory. Quitting...'
+        print('Could not find layout directory. Quitting...')
         sys.exit()
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -135,8 +136,8 @@ def build(symlink=False):
             output_file = "%s/%s" % (output_dir, os.path.relpath(content_file,content_dir))
             make_path(os.path.dirname(output_file))
 
-            # if this is a yaml file, do site rendering
-            if file.endswith('.yaml'):
+            # if this is a nonhidden yaml file, do site rendering
+            if file.endswith('.yaml') and not file.startswith('.'):
                 #rename output .html
                 output_file = os.path.splitext(output_file)[0] + '.html'
 
@@ -144,38 +145,31 @@ def build(symlink=False):
                 with open(content_file) as f:
                     try:
                         yaml_data = yaml.load(f)
-                    except Exception as e:
-                        print traceback.format_exc()
-                        print 'Error while loading content file: %s' % content_file
-
-                    # try to find the layout specified on content_file
-                    # if not specified, print a warning and skip content_file
-                    try:
+                        # try to find the layout specified on content_file
+                        # if not specified, print a warning and skip content_file
                         layout_file = "%s/%s" % (layout_dir, yaml_data['layout'])
-
+                        # create path to output_file and render it.
+                        # if layout not found, print warning
+                        template = env.get_template(layout_file)
+                        with open(output_file,'w+') as out:
+                            out.write(template.render(**yaml_data))
+                    except Exception as e:
+                        print(traceback.format_exc())
+                        print('Error while loading content file: %s' % content_file)
                     except KeyError:
                         print('No layout specified for %s. Skipping...' % content_file)
                         break
-
-                    # create path to output_file and render it.
-                    # if layout not found, print warning
-                    try:
-                        template = env.get_template(layout_file)
                     except TemplateNotFound:
                         print('Could not find layout file %s for %s. Skipping...' %
                             (layout_file,
                             content_file))
                         break
-
-                    try:
-                        with open(output_file,'w+') as out:
-                            out.write(template.render(**yaml_data))
                     except Exception as e:
-                        print traceback.format_exc()
-                        print 'Error while rendering content file: %s' % content_file
+                        print(traceback.format_exc())
+                        print('Error while rendering content file: %s' % content_file)
 
             # if this is not yaml, just copy the file
-            else:
+            elif not file.startswith('.'):
                 copy_resource(content_file,output_file,symlink)
 
 import argparse
@@ -207,12 +201,12 @@ if args.runserver:
         def on_any_event(self,event):
             if event.event_type in ("modified","deleted","moved","created"):
                 # we're in output_dir, we need to cd back before building
-                print "Detected change in {0}. Rebuilding...".format(event.src_path),
+                print("Detected change in {0}. Rebuilding...".format(event.src_path))
                 start_time = datetime.now()
                 os.chdir('..')
                 build(symlink)
                 os.chdir(output_dir)
-                print " Done. {0}s".format((datetime.now()-start_time).total_seconds())
+                print(" Done. {0}s".format((datetime.now()-start_time).total_seconds()))
 
 
     # watch content directory for changes
@@ -222,14 +216,14 @@ if args.runserver:
     observer.start()
 
     # start development webserver
-    import SimpleHTTPServer
-    import SocketServer
+    import http.server
+    import socketserver
     port = 8000
     # SimpleHTTPServer doesn't accept a directory, so we have to cd
     os.chdir(output_dir)
-    Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    httpd = SocketServer.TCPServer(("", port), Handler)
-    print "Serving on port", port
+    Handler = http.server.SimpleHTTPRequestHandler
+    httpd = socketserver.TCPServer(("", port), Handler)
+    print("Serving on port", port)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
